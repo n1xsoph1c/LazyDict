@@ -1,7 +1,40 @@
-import requests
-from bs4 import BeautifulSoup
-from threading import Thread
+from enum import Flag
+import os
+import sys
 import time
+from threading import Thread
+
+firstRun = False
+
+try:
+    import requests
+except ModuleNotFoundError as e:
+    print(e.msg)
+    if input("Do you want to install 'requests'? (y/n): ") == "y":
+        os.system("pip3 install requests")
+        firstRun = True
+    else:
+        print("Exiting...")
+        sys.exit()
+
+try:
+    from bs4 import BeautifulSoup
+except ModuleNotFoundError as e:
+    print(e.msg)
+    if input("Do you want to install 'BeautifulSoup'? (y/n): ") == "y":
+        os.system("pip3 install beautifulsoup4")
+        firstRun = True
+    else:
+        print("Exiting... ")
+        sys.exit()
+
+if firstRun:
+    os.system("clear")
+    print("!! YOU ARE RUNNING THIS SCRIPT FOR THE FIRST TIIME !!")
+    print("!! SO, WE HAD TO INSTALL SOME MISSING MODULES !!")
+    print("!! THEREFORE, YOU MUST RESTART THE SCRIPT !!")
+    print("!! EXITING... ")
+    sys.exit()
 
 st = time.time()
 
