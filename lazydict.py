@@ -1,8 +1,14 @@
 import requests
 from bs4 import BeautifulSoup
+from threading import Thread
+import time
+
+st = time.time()
 
 
 class LazyDict:
+    global st
+
     def __init__(self, word) -> None:
         self.word = word
 
@@ -17,60 +23,98 @@ class LazyDict:
         self.SYNM = f"https://www.wordhippo.com/what-is/another-word-for/{self.word}.html"
         self.ANTNM = f"https://www.wordhippo.com/what-is/the-opposite-of/{self.word}.html"
 
+        self.en_def = str()
+        self.bn_def = str()
+        self.n = list()
+        self.adj = list()
+        self.adv = list()
+        self.vrb = list()
+        self.snm = list()
+        self.antnm = list()
+
     def getPage(self, url):
         return BeautifulSoup(requests.get(url).content, features="html.parser")
 
-    def getEnglishDefination(self):
+    def getEnglishDefination(self, n):
         soup = self.getPage(self.EDEF)
         definations = soup.find_all("div", class_="tabdesc")
-        return definations[0].text if definations else ""
+        self.en_def = definations[0].text if definations else ["Nothing"]
 
-    def getBanglaDefination(self):
+    def getBanglaDefination(self, n):
         soup = self.getPage(self.BDEF)
         defination = soup.find_all("div", class_="align_text2")
-        return defination[0].text if defination else "Nothing"
+        self.bn_def = defination[0].text if defination else ["Nothing"]
 
     def getNoun(self, amount):
         soup = self.getPage(self.NOUN)
         nouns = soup.find_all("div", class_="defv2wordtype", limit=amount)
-        return [noun.text for noun in nouns]
+        self.n = [noun.text for noun in nouns] if len(nouns) > 0 else [
+            "Nothing"]
 
     def getAdjective(self, amount):
         adjPage = self.getPage(self.ADJ)
         adjs = adjPage.find_all("div", class_="defv2wordtype", limit=amount)
-        return [adj.text for adj in adjs] if len(adjs) > 0 else "Nothing"
+        self.adj = [adj.text for adj in adjs] if len(adjs) > 0 else ["Nothing"]
 
     def getAdverb(self, amount):
         advPage = self.getPage(self.ADV)
         advs = advPage.find_all("div", class_="defv2wordtype", limit=amount)
-        return [adv.text for adv in advs] if len(advs) > 0 else "Nothing"
+        self.adv = [adv.text for adv in advs] if len(advs) > 0 else ["Nothing"]
 
     def getVerb(self, amount):
         vrbPage = self.getPage(self.VRB)
         vrbs = vrbPage.find_all("div", class_="defv2wordtype", limit=amount)
-        return [vrb.text for vrb in vrbs] if len(vrbs) > 0 else "Nothing"
+        self.vrb = [vrb.text for vrb in vrbs] if len(vrbs) > 0 else ["Nothing"]
 
     def getSynonyms(self, amount):
         synmPage = self.getPage(self.SYNM)
         synms = synmPage.find_all("div", class_="wb", limit=amount)
-        return [synm.a.text for synm in synms] if len(synms) > 0 else "nothing"
+        self.snm = [synm.a.text for synm in synms] if len(
+            synms) > 0 else ["Nothing"]
 
     def getAntononyms(self, amount):
         antnmPage = self.getPage(self.ANTNM)
         antnms = antnmPage.find_all("div", class_="wb", limit=amount)
-        return [antm.a.text for antm in antnms] if len(antnms) > 0 else "nothing"
+        self.antnm = [antm.a.text for antm in antnms] if len(
+            antnms) > 0 else ["Nothing"]
 
     def fetchAll(self, n):
+        t1 = Thread(target=self.getEnglishDefination, args=[n])
+        t2 = Thread(target=self.getBanglaDefination, args=[n])
+        t3 = Thread(target=self.getNoun, args=[n])
+        t4 = Thread(target=self.getAdjective, args=[n])
+        t5 = Thread(target=self.getAdverb, args=[n])
+        t6 = Thread(target=self.getVerb, args=[n])
+        t7 = Thread(target=self.getSynonyms, args=[n])
+        t8 = Thread(target=self.getAntononyms, args=[n])
+
+        t1.start()
+        t2.start()
+        t3.start()
+        t4.start()
+        t5.start()
+        t6.start()
+        t7.start()
+        t8.start()
+
+        t1.join()
+        t2.join()
+        t3.join()
+        t4.join()
+        t5.join()
+        t6.join()
+        t7.join()
+        t8.join()
 
         return {
-            "enDef": self.getEnglishDefination(),
-            "bnDef": self.getBanglaDefination(),
-            "n": self.getNoun(n),
-            "adj": self.getAdjective(n),
-            "adv": self.getAdverb(n),
-            "vrb": self.getVerb(n),
-            "antnm": self.getAntononyms(n),
-            "snnm": self.getSynonyms(n)
+            "enDef": self.en_def,
+            "bnDef": self.bn_def,
+            "n": self.n,
+            "adj": self.adj,
+            "adv": self.adv,
+            "vrb": self.vrb,
+            "antnm": self.antnm,
+            "snnm": self.snm
         }
 
 
