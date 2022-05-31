@@ -192,5 +192,10 @@ if __name__ == "__main__":
     #     run()
     # except Exception as e:
     #     print("Ran into an error!\n", e)
-
-    run(sys.argv[1])
+    if sys.argv[1] == "-d":
+        ld = LazyDict(sys.argv[2])
+        ld.getBanglaDefination(2)
+        ld.getEnglishDefination(2)
+        print(ld.bn_def, "\n", ld.en_def)
+    else:
+        run(sys.argv[1])
