@@ -1,4 +1,4 @@
 #! /bin/bash
 
 LD="/Users/gh0st/Development/Python/LazyDict/lazydict.py"
-python3 $LD $1
+python3 $LD $1 $2
