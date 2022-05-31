@@ -151,8 +151,7 @@ class LazyDict:
         }
 
 
-def run():
-    word = input("Word: ")
+def run(word):
     print("Searching...")
     ld = LazyDict(word).fetchAll(2)
 
@@ -185,6 +184,8 @@ def run():
 
     del ld
 
+# cripple;manacles;segreation;discriminatoin;poverty;metarial;prosperity;languishing;exile;creed;swelter;injustice;oppresion;oasis;content;governor;dripping;interposition;nullification;exalted;crooked;flesh;hew;despair;jangling;discord;symphony;prodigious;hampshire;hiightening;alleghenies;hamlet;gentiles;protestants;abridged
+
 
 if __name__ == "__main__":
     # try:
@@ -192,4 +193,4 @@ if __name__ == "__main__":
     # except Exception as e:
     #     print("Ran into an error!\n", e)
 
-    run()
+    run(sys.argv[1])
