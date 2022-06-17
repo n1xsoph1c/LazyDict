@@ -41,8 +41,8 @@
         width: 100%;
         height: 60dh;
         overflow-x: hidden;
-	border-radius: 20px;
-	border: 1px solid transparent;
+        border-radius: 20px;
+        border: 1px solid transparent;
     }
 
     .resultView {
@@ -92,6 +92,10 @@
         text-transform: uppercase;
         margin: 10px;
     }
+	
+    #main{
+	background-color: deepskyblue;
+    } 
 
     #p {
         text-transform: uppercase;
@@ -104,6 +108,11 @@
 </style>
 
 <script>
+    function run() {
+        document.getElementById('search').innerHTML = "Searching...";
+    }
+
+    var result = "{{ res }}";
 
 
 </script>
@@ -111,25 +120,26 @@
 
 <body>
 
-    <form action="http://localhost:5000/search" method="post">
+    <form action="http://localhost:5000/search" method="post" onsubmit="run()">
         <p><input type="text" name="word" placeholder="Search Word (10 max)" /></p>
         <button type="submit"> Search </button>
     </form>
 
-    <div class="container">
-    <!-- <h1> {{ word }}<br>
+
+    <div class="container" id="container" >
+        <!-- <h1> {{ word }}<br>
         {{ ld['bnDef'] }} </h1>
     <h2> {{ ld['enDef'] }} </h2> -->
-    <div id="search"> </div>
+        <h1 id="search"> </h1>
 
-    {% if items %}
-    {% for i in items %}
+        {% if items %}
+        {% for i in items %}
         <div class="resultView">
-            <h1>{{ word[i] }}<br>
+           <div id="main"> <h1>{{ word[i] }}<br>
                 <p id="p">{{ ld[i]['enDef'] }}</p>
             </h1>
 
-            <hr>
+            </div> <hr>
             <div class="result">
                 <b> Meaning </b>
                 <hr>
